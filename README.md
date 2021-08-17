@@ -15,8 +15,9 @@ Two utility tools built as a part of Pinwheel's coding challenge. The first util
 
 Python Version: 3.9.5
 
-# Notes
+# Tests
 Add unit test for form number returned
+Add unit test for link working at all
 Add unit test for pdf file type
 
 
