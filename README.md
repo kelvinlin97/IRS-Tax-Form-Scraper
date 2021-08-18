@@ -8,11 +8,11 @@ Our tool allows you to easily search for information regarding past IRS forms.
 
 Follow along with the command line prompts to specify the form names you're searching for (space delimited)!
 
-[Enter form names](https://i.imgur.com/73gb3RL.png)
+![Enter form names](https://i.imgur.com/73gb3RL.png)
 
 Once you've entered the form names you're searching for, check the JSON data to see if it's correct. If it looks right, enter "y" and the JSON data will be downloaded in your main directory as "data.json".
 
-[Show form data](https://i.imgur.com/gQtARbg.png)
+![Show form data](https://i.imgur.com/gQtARbg.png)
 
 # Setup
 
