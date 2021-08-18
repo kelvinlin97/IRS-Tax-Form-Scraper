@@ -1,8 +1,69 @@
+import requests
+from bs4 import BeautifulSoup
+import json
+
 userInput = input("Enter tax form number (e.g. 1095-C, W-2). If entering multiple forms, please separate each form number by space: ").split(' ')
+
+def getJSON(data, name):
+  max_year = 0
+  min_year = 2021
+  for column in data:
+    if len(column) > 0:
+      form_name = column[0]
+      form_title = column[1]
+      form_year = int(column[2])
+      if form_name == name:
+        max_year = max(max_year, form_year)
+        min_year = min(min_year, form_year)
+  if max_year == 0:
+    return '{name} not found, did you enter the correct form name?'.format(name=name)
+  json_data = {"form_number": name, "form_title": form_title, "min_year": min_year, "max_year": max_year}
+  return json_data
 
 def getFormInfo(userInput):
   url = 'https://apps.irs.gov/app/picklist/list/priorFormPublication.html?resultsPerPage=200&sortColumn=sortOrder&indexOfFirstRow=0&criteria=formNumber&value=form+{name}&isDescending=false'.format(name=userInput)
-  print(url)
+  html = requests.get(url)
+  soup = BeautifulSoup(html.content, "html.parser")
+  form_number = "Form {name}".format(name=userInput)
+  formTable = soup.find('table', {"class": "picklist-dataTable"})
+  rows = formTable.findChildren(['tr'])
+  form_data = []
+  json_data = []
+  for row in rows:
+    cells = row.findChildren('td')
+    row_data = []
+    for cell in cells:
+      value = cell.get_text()
+      value = value.replace('\n', '')
+      value = value.replace('\t', '')
+      value = value.strip()
+      row_data.append(value)
+    form_data.append(row_data)
+  return getJSON(form_data, form_number)
 
-for name in userInput:
-  getFormInfo(name)
+def compileUserJSON(input):
+  if input[0] == '' or input is None:
+    return 'Error, input is empty'
+  user_requested_json = []
+  for name in input:
+    user_requested_json.append(getFormInfo(name))
+  return user_requested_json
+
+data = compileUserJSON(userInput)
+
+print(data)
+
+userDownloadInput = input("Download data? (y/n) ")
+
+def downloadData(userDownloadInput, data):
+  if userDownloadInput == 'y':
+    # Saves json data into data.json file in main directory
+    with open('data.json', 'w', encoding='utf-8') as f:
+      json.dump(data, f, ensure_ascii=False, indent=4)
+  elif userDownloadInput == 'n':
+    return
+  else:
+    print("Please select either y or n")
+
+downloadData(userDownloadInput, data)
+
