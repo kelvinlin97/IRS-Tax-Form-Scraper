@@ -1,6 +1,6 @@
-# Pinwheel
+# IRS Tax Forms Scraper
 
-Two Python utility tools built as a part of Pinwheel's coding challenge. The first utility tool takes in input from the command line on the specified tax form name(s) e.g. Form W-2, Form 1095-C and returns json data on the form number, form title, minimum year, and maximum year. The second utility tool takes in a tax form name and a range of years and downloads all of the PDF files in a subdirectory.
+Two Python utility tools built to make it easier to find and download tax forms. The first utility tool takes in input from the command line on the specified tax form name(s) e.g. Form W-2, Form 1095-C and returns json data on the form number, form title, minimum year, and maximum year. The second utility tool takes in a tax form name and a range of years and downloads all of the PDF files in a subdirectory.
 
 # Usage
 
