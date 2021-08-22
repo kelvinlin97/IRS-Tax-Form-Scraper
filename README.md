@@ -31,9 +31,9 @@ Your files will be downloaded in a subdirectory!
 # Setup
 
 1. Fork and clone this repo.
-2. Install dependencies: pip install -r requirements.txt
+2. Install dependencies: `pip install -r requirements.txt`
 3. Choose from one of two scripts that contain our two different utilities.
-4. Use "python app.py" to run utility 1 which generates JSON form data or use "python get_pdf.py" to run utility 2 which downloads pdf files into a subdirectory on a specified year range.
+4. Use `python app.py` to run utility 1 which generates JSON form data or use `python get_pdf.py` to run utility 2 which downloads pdf files into a subdirectory on a specified year range.
 4. Follow our command line guiding :)!
 
 # Technologies
