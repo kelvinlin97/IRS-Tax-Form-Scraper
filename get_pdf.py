@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup
 import urllib.request
 import os
 
-formNumbers = input("Enter tax form number (e.g. 1095-C, W-2): ")
-formStartYears = int(input("Enter starting year for requested forms: "))
-formEndYears = int(input("Enter ending year for requested forms (enter same year as starting year if only single year requested): "))
+form_numbers = input("Enter tax form number (e.g. 1095-C, W-2): ")
+form_start_years = int(input("Enter starting year for requested forms: "))
+form_end_years = int(input("Enter ending year for requested forms (enter same year as starting year if only single year requested): "))
 
 def download_forms(name, forms, start, end):
   dir_name = name
@@ -34,8 +34,8 @@ def get_forms(number, start, end):
   html = requests.get(url)
   soup = BeautifulSoup(html.content, "html.parser")
   form_number = "Form {name}".format(name=number)
-  formTable = soup.find('table', {"class": "picklist-dataTable"})
-  rows = formTable.findChildren(['tr'])
+  form_table = soup.find('table', {"class": "picklist-dataTable"})
+  rows = form_table.findChildren(['tr'])
   form_data = []
   for row in rows:
     cells = row.findChildren('td')
@@ -52,4 +52,4 @@ def get_forms(number, start, end):
     form_data.append(row_data)
   download_forms(form_number, form_data, start, end)
 
-get_forms(formNumbers, formStartYears, formEndYears)
+get_forms(form_numbers, form_start_years, form_end_years)
