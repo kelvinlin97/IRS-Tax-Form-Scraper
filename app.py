@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+import logging
+import argparse
 
 user_input = input("Enter tax form number (e.g. 1095-C, W-2). If entering multiple forms, please separate each form number by space: ").split(' ')
 
@@ -16,9 +18,15 @@ def get_JSON(data, name):
         max_year = max(max_year, form_year)
         min_year = min(min_year, form_year)
   if max_year == 0:
-    return '{name} not found, did you enter the correct form name?'.format(name=name)
+    logging.error('{name} not found did you enter the correct form name?'.format(name=name))
   json_data = {"form_number": name, "form_title": form_title, "min_year": min_year, "max_year": max_year}
   return json_data
+
+def parse_text(text):
+  parsedText = text.replace('\n', '')
+  parsedText = text.replace('\t', '')
+  parsedText = text.strip()
+  return parsedText
 
 def getFormInfo(user_input):
   url = 'https://apps.irs.gov/app/picklist/list/priorFormPublication.html?resultsPerPage=200&sortColumn=sortOrder&indexOfFirstRow=0&criteria=formNumber&value=form+{name}&isDescending=false'.format(name=user_input)
@@ -33,17 +41,14 @@ def getFormInfo(user_input):
     cells = row.findChildren('td')
     row_data = []
     for cell in cells:
-      value = cell.get_text()
-      value = value.replace('\n', '')
-      value = value.replace('\t', '')
-      value = value.strip()
+      value = parse_text(cell.get_text())
       row_data.append(value)
     form_data.append(row_data)
   return get_JSON(form_data, form_number)
 
 def compileUserJSON(input):
   if input[0] == '' or input is None:
-    return 'Error, input is empty'
+    logging.error('Error, input is empty')
   user_requested_json = []
   for name in input:
     user_requested_json.append(getFormInfo(name))
@@ -63,7 +68,7 @@ def downloadData(download_input, data):
   elif download_input == 'n':
     return
   else:
-    print("Please select either y or n")
+    logging.error('Please select either y or n')
 
 downloadData(download_input, data)
 

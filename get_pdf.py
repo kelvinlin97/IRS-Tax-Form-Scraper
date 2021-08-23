@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.request
 import os
+import argparse
 
 form_numbers = input("Enter tax form number (e.g. 1095-C, W-2): ")
 form_start_years = int(input("Enter starting year for requested forms: "))
@@ -24,10 +25,16 @@ def download_forms(name, forms, start, end):
   os.mkdir(dir_name)
   for year in form_dict_by_year:
     response = urllib.request.urlopen(form_dict_by_year[year])
-    file = open("{name}/{name} - {year}.pdf".format(name=dir_name, year=year), 'wb')
-    file.write(response.read())
-    file.close()
+    with open("{name}/{name} - {year}.pdf".format(name=dir_name, year=year), 'wb') as file:
+      file.write(response.read())
     print("Downloaded {name} {year}!".format(name=dir_name, year=year))
+
+def parse_text(text):
+  parsed_text = text.replace('\n', '')
+  parsed_text.replace('\t', '')
+  parsed_text.strip()
+  return parsed_text
+
 
 def get_forms(number, start, end):
   url = 'https://apps.irs.gov/app/picklist/list/priorFormPublication.html?resultsPerPage=200&sortColumn=sortOrder&indexOfFirstRow=0&criteria=formNumber&value=form+{name}&isDescending=false'.format(name=number)
@@ -41,10 +48,7 @@ def get_forms(number, start, end):
     cells = row.findChildren('td')
     row_data = []
     for cell in cells:
-      value = cell.get_text()
-      value = value.replace('\n', '')
-      value = value.replace('\t', '')
-      value = value.strip()
+      value = parse_text(cell.get_text())
       a_ref = cell.find_all('a', href=True)
       row_data.append(value)
       if(len(a_ref) > 0):
